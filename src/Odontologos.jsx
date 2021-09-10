@@ -14,7 +14,7 @@ import 'primereact/resources/themes/nova-alt/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
-export default class App extends Component {
+export default class Odontologos extends Component {
   constructor() {
     super();
     this.state = {
@@ -27,7 +27,7 @@ export default class App extends Component {
         matricula: null
       },
       selectedOdontologo: {},
-      footer: this.footer1
+      footer: this.guardar
 
     }
     this.items = [
@@ -51,12 +51,12 @@ export default class App extends Component {
     this.save = this.save.bind(this);
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
-    this.footer1 = (
+    this.guardar = (
       <div>
         <Button label="Guardar" icon="pi pi-check" onClick={this.save} />
       </div>
     );
-    this.footer2 = (
+    this.actualizar = (
       <div>
         <Button label="Actualizar" icon="pi pi-check" onClick={this.update} />
       </div>
@@ -77,8 +77,7 @@ export default class App extends Component {
           id: null,
           nombre: null,
           apellido: null,
-          direccion: null,
-          telefono: null
+          matricula: null
         }
       });
       this.toast.show({ severity: 'success', summary: 'Atención!', detail: 'Se guardó el registro correctamente.' });
@@ -108,16 +107,18 @@ export default class App extends Component {
     if(window.confirm("Realmente desea eliminar el registro?")){
       this.odontologoService.delete(this.state.selectedOdontologo.id).then(data => {
         this.toast.show({severity: 'success', summary: 'Atención!', detail: 'Se eliminó el registro correctamente.'});
+        
         this.odontologoService.getAll().then(data => this.setState({Odontologos: data}));
       });
     }
   }
+  
   render() {
     return (
       <div style={{ width: '80%', marginTop: '20px', margin: '0 auto' }}>
         <Menubar model={this.items} />
         <br />
-        <Panel header="Clinica odontologica">
+        <Panel header="Odontologos">
           <DataTable value={this.state.odontologos} paginator={true} rows="5" selectionMode="single" selection={this.state.selectedOdontologo} onSelectionChange={e => this.setState({selectedOdontologo: e.value})}>
             <Column field="id" header="ID"></Column>
             <Column field="nombre" header="Nombre"></Column>
@@ -158,10 +159,10 @@ export default class App extends Component {
             <InputText value={this.state.odontologo.matricula} style={{ width: '100%' }} id="matricula" onChange={(e) => {
               let val = e.target.value;
               this.setState(prevState => {
-                let odontologo = Object.assign({}, prevState.odontologo);
-                odontologo.matricula = val
+                // let odontologo = Object.assign({}, prevState.odontologo);
+                // odontologo.matricula = val
 
-                return { odontologo };
+                return {odontologo: {...prevState.odontologo, matricula: val} };
               })
             }
             } />
@@ -183,7 +184,7 @@ export default class App extends Component {
         apellido: null,
         matricula: null
       },
-      footer: this.footer1
+      footer: this.guardar
     })
   }
 
@@ -197,7 +198,7 @@ export default class App extends Component {
         apellido: this.state.selectedOdontologo.apellido,
         matricula: this.state.selectedOdontologo.matricula
       },
-      footer: this.footer2
+      footer: this.actualizar
     })
   }
 }

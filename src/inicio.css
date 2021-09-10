@@ -1,0 +1,14 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5vw;
+}
+.botonOdontologos{
+    width: 40vw;
+    height: 40vw;
+}
+.botonPacientes{
+    width: 40vw;
+    height: 40vw;
+}

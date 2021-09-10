@@ -1,11 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Odontologos from './Odontologos';
+import Pacientes from './Pacientes'
+import Inicio from './Inicio'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/* <Odontologos />
+    <Pacientes></Pacientes> */}
+    <Inicio/>
   </React.StrictMode>,
   document.getElementById('root')
 );
