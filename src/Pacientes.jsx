@@ -134,15 +134,24 @@ export default class Pacientes extends Component {
         <Menubar model={this.items} />
         <br />
         <Panel header="Pacientes">
+          <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText type="search" value={this.state.globalFilter} onChange={(e) =>
+            this.pacienteService.search(e.target.value).then(data =>{
+              this.setState({pacientes: data})
+           })
+          } 
+            placeholder="Busqueda por id" />
+          </span>
           <DataTable value={this.state.pacientes} paginator={true} rows="5" selectionMode="single" selection={this.state.selectedPaciente} onSelectionChange={e => this.setState({ selectedPaciente: e.value })}>
             <Column field="id" header="ID"></Column>
             <Column field="nombre" header="Nombre"></Column>
             <Column field="apellido" header="Apellido"></Column>
             <Column field="dni" header="DNI"></Column>
-            <Column field="calle" header="Calle"></Column>
-            <Column field="numero" header="Numero"></Column>
-            <Column field="localidad" header="Localidad"></Column>
-            <Column field="provincia" header="Provincia"></Column>
+            <Column field="domicilio.calle" header="Calle"></Column>
+            <Column field="domicilio.numero" header="Numero"></Column>
+            <Column field="domicilio.localidad" header="Localidad"></Column>
+            <Column field="domicilio.provincia" header="Provincia"></Column>
           </DataTable>
         </Panel>
         <Dialog header="Crear paciente" visible={this.state.visible} style={{ width: '400px' }} footer={this.state.footer} modal={true} onHide={() => this.setState({ visible: false })}>
@@ -192,9 +201,9 @@ export default class Pacientes extends Component {
               <InputText value={this.state.paciente.domicilio.calle} style={{ width: '100%' }} id="calle" onChange={(e) => {
                 let val = e.target.value;
                 this.setState(prevState => {
-                  return { paciente: {...prevState.paciente, domicilio: {...prevState.paciente.domicilio, calle: val}} };
+                  return { paciente: { ...prevState.paciente, domicilio: { ...prevState.paciente.domicilio, calle: val } } };
                 })
-                }
+              }
               } />
               <label htmlFor="calle">Calle</label>
             </span>
@@ -203,9 +212,9 @@ export default class Pacientes extends Component {
               <InputText value={this.state.paciente.domicilio.numero} style={{ width: '100%' }} id="numero" onChange={(e) => {
                 let val = e.target.value;
                 this.setState(prevState => {
-                  return { paciente: {...prevState.paciente, domicilio: {...prevState.paciente.domicilio, numero: val}} };
+                  return { paciente: { ...prevState.paciente, domicilio: { ...prevState.paciente.domicilio, numero: val } } };
                 })
-                }
+              }
               } />
               <label htmlFor="numero">Numero</label>
             </span>
@@ -214,9 +223,9 @@ export default class Pacientes extends Component {
               <InputText value={this.state.paciente.domicilio.localidad} style={{ width: '100%' }} id="localidad" onChange={(e) => {
                 let val = e.target.value;
                 this.setState(prevState => {
-                  return { paciente: {...prevState.paciente, domicilio: {...prevState.paciente.domicilio, localidad: val}} };
+                  return { paciente: { ...prevState.paciente, domicilio: { ...prevState.paciente.domicilio, localidad: val } } };
                 })
-                }
+              }
               } />
               <label htmlFor="localidad">Localidad</label>
             </span>
@@ -225,9 +234,9 @@ export default class Pacientes extends Component {
               <InputText value={this.state.paciente.domicilio.provincia} style={{ width: '100%' }} id="provincia" onChange={(e) => {
                 let val = e.target.value;
                 this.setState(prevState => {
-                  return { paciente: {...prevState.paciente, domicilio: {...prevState.paciente.domicilio, provincia: val}} };
+                  return { paciente: { ...prevState.paciente, domicilio: { ...prevState.paciente.domicilio, provincia: val } } };
                 })
-                }
+              }
               } />
               <label htmlFor="provincia">Provincia</label>
             </span>
@@ -247,7 +256,7 @@ export default class Pacientes extends Component {
         apellido: "",
         dni: "",
         domicilio: {
-          calle: "", 
+          calle: "",
           numero: "",
           localidad: "",
           provincia: ""
@@ -267,7 +276,7 @@ export default class Pacientes extends Component {
         apellido: this.state.selectedPaciente.apellido,
         dni: this.state.selectedPaciente.dni,
         domicilio: {
-          calle: this.state.selectedPaciente.domicilio.calle, 
+          calle: this.state.selectedPaciente.domicilio.calle,
           numero: this.state.selectedPaciente.domicilio.numero,
           localidad: this.state.selectedPaciente.domicilio.localidad,
           provincia: this.state.selectedPaciente.domicilio.provincia
