@@ -131,10 +131,11 @@ export default class Pacientes extends Component {
   render() {
     return (
       <div style={{ width: '80%', marginTop: '20px', margin: '0 auto' }}>
+        <br/>
         <Menubar model={this.items} />
         <br />
         <Panel header="Pacientes">
-          <span className="p-input-icon-left">
+          {/* <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <InputText type="search" value={this.state.globalFilter} onChange={(e) =>
             this.pacienteService.search(e.target.value).then(data =>{
@@ -142,9 +143,9 @@ export default class Pacientes extends Component {
            })
           } 
             placeholder="Busqueda por id" />
-          </span>
+          </span> */}
           <DataTable value={this.state.pacientes} paginator={true} rows="5" selectionMode="single" selection={this.state.selectedPaciente} onSelectionChange={e => this.setState({ selectedPaciente: e.value })}>
-            <Column field="id" header="ID"></Column>
+            <Column field="id" header="ID" sortable></Column>
             <Column field="nombre" header="Nombre"></Column>
             <Column field="apellido" header="Apellido"></Column>
             <Column field="dni" header="DNI"></Column>

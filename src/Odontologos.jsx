@@ -116,11 +116,12 @@ export default class Odontologos extends Component {
   render() {
     return (
       <div style={{ width: '80%', marginTop: '20px', margin: '0 auto' }}>
+        <br/>
         <Menubar model={this.items} />
         <br />
         <Panel header="Odontologos">
           <DataTable value={this.state.odontologos} paginator={true} rows="5" selectionMode="single" selection={this.state.selectedOdontologo} onSelectionChange={e => this.setState({selectedOdontologo: e.value})}>
-            <Column field="id" header="ID"></Column>
+            <Column field="id" header="ID" sortable></Column>
             <Column field="nombre" header="Nombre"></Column>
             <Column field="apellido" header="Apellido"></Column>
             <Column field="matricula" header="Matricula"></Column>

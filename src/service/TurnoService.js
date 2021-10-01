@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export class TurnoService{
-    baseUrl = "http://localhost:8080/turnos"
+    baseUrl = "http://localhost:8081/turnos"
     getAll(){
         return axios.get(this.baseUrl).then(res => res.data)
     }

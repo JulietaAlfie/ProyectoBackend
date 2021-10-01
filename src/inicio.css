@@ -3,8 +3,8 @@
     align-items: center;
     justify-content: center;
     gap: 5vw;
-   
-;
+   margin: auto;
+   margin-top: 2vh;
 }
 .botonOdontologos, .botonPacientes{
      outline: none;

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export class OdontologoService{
-    baseUrl = "http://localhost:8080/odontologos"
+    baseUrl = "http://localhost:8081/odontologos"
     getAll(){
         return  axios.get(this.baseUrl).then(res => res.data);
     }

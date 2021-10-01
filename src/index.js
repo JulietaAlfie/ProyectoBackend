@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Odontologos from './Odontologos';
-import Pacientes from './Pacientes'
 import Inicio from './Inicio'
+import Login from './Login';
+
+let componente;
+localStorage.getItem("jwt") ? componente = <Inicio/> : componente = <Login/>
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <Odontologos />
-    <Pacientes></Pacientes> */}
-    <Inicio/>
+    {componente}
   </React.StrictMode>,
   document.getElementById('root')
 );
