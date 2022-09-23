@@ -14,24 +14,24 @@ import { Dropdown } from "primereact/dropdown";
 import "./FormDemo.css";
 
 const Appointments = () => {
-  const [turnos, setAppointments] = useState([]);
-  const [odontologos, setDentists] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [dentists, setDentists] = useState([]);
   const [patients, setPatients] = useState([]);
 
   const [visible, setVisible] = useState(false);
-  const [turno, setAppointment] = useState({
+  const [appointment, setAppointment] = useState({
     id: null,
     date: "",
     patientId: null,
-    odontologoId: null
+    dentistId: null
   });
   const [patient, setPatient] = useState();
-  const [odontologo, setDentist] = useState();
+  const [dentist, setDentist] = useState();
   const [selectedAppointment, setSelectedAppointment] = useState({
     id: null,
     date: null,
     patientId: null,
-    odontologoId: null
+    dentistId: null
   });
   const [date, setDate] = useState("");
   const toast = useRef(null);
@@ -52,8 +52,8 @@ const Appointments = () => {
       }
     }
   ];
-  const turnoService = new AppointmentService();
-  const odontologoService = new DentistService();
+  const appointmentService = new AppointmentService();
+  const dentistService = new DentistService();
   const patientService = new PatientService();
 
   const footer = (
@@ -61,17 +61,17 @@ const Appointments = () => {
   );
 
   useEffect(() => {
-    turnoService.getAll().then((data) => {
+    appointmentService.getAll().then((data) => {
       setAppointments(data);
       // console.log(data)
     });
-    odontologoService.getAll().then((data) => {
+    dentistService.getAll().then((data) => {
       setDentists(
-        data.map((odontologo) => {
-          let id = odontologo.id;
-          let nombre = odontologo.nombre;
-          let apellido = odontologo.apellido;
-          return { label: id + "- " + nombre + " " + apellido, value: id };
+        data.map((dentist) => {
+          let id = dentist.id;
+          let name = dentist.name;
+          let lastname = dentist.lastname;
+          return { label: id + "- " + name + " " + lastname, value: id };
         })
       );
     });
@@ -79,30 +79,37 @@ const Appointments = () => {
       setPatients(
         data.map((patient) => {
           let id = patient.id;
-          let nombre = patient.nombre;
-          let apellido = patient.apellido;
-          return { label: id + "- " + nombre + " " + apellido, value: id };
+          let name = patient.name;
+          let lastname = patient.lastname;
+          return { label: id + "- " + name + " " + lastname, value: id };
         })
       );
     });
   }, []);
 
   function save() {
-    turnoService
-      .save(turno)
+    dentistService.search(appointment.dentistId).then(res => setAppointment((prevState) => {
+      return { ...prevState, dentistId: res.data };
+    })).then(
+    patientService.search(appointment.patientId).then(res => setAppointment((prevState) => {
+      console.log(res);
+      return { ...prevState, patientId: res.data };
+    }))).then(
+    appointmentService
+      .save(appointment))
       .then(
         setVisible(false),
         setAppointment({
           id: null,
           date: null,
           patientId: null,
-          odontologoId: null
+          dentistId: null
         }),
         setDate(null),
         setDentist(null),
         setPatient(null)
       )
-      .then(turnoService.getAll().then((data) => setAppointments(data)));
+      .then(appointmentService.getAll().then((data) => setAppointments(data)));
     toast.current.show({
       severity: "success",
       summary: "Atención!",
@@ -116,14 +123,14 @@ const Appointments = () => {
       id: null,
       date: date,
       patientId: patient,
-      odontologoId: odontologo
+      dentistId: dentist
     });
-    if (turno) {
+    if (appointment) {
       save();
     }
   }
 
-  let handleAppointments = turnos.map((turn) => {
+  let handleAppointments = appointments.map((turn) => {
     let patientTransitorio = patients.find(
       (pac) => pac.value === turn.patientId
     );
@@ -134,26 +141,26 @@ const Appointments = () => {
         " " +
         patientTransitorio.label.split(" ")[2];
     }
-    let odontologoTransitorio = odontologos.find(
-      (odonto) => odonto.value === turn.odontologoId
+    let dentistTransitorio = dentists.find(
+      (odonto) => odonto.value === turn.dentistId
     );
-    let odontologoOk;
-    if (odontologoTransitorio) {
-      odontologoOk =
-        odontologoTransitorio.label.split(" ")[1] +
+    let dentistOk;
+    if (dentistTransitorio) {
+      dentistOk =
+        dentistTransitorio.label.split(" ")[1] +
         " " +
-        odontologoTransitorio.label.split(" ")[2];
+        dentistTransitorio.label.split(" ")[2];
     }
     return {
       id: turn.id,
       date: turn.date ? turn.date.slice(0, 10) : null,
       patientId: patientOk,
-      odontologoId: odontologoOk
+      dentistId: dentistOk
     };
   });
 
   function update() {
-    turnoService
+    appointmentService
       .update(selectedAppointment)
       .then(
         setVisible(false),
@@ -161,14 +168,14 @@ const Appointments = () => {
           id: null,
           date: null,
           patientId: null,
-          odontologoId: null
+          dentistId: null
         }),
         setAppointment(null),
         setDate(null),
         setDentist(null),
         setPatient(null)
       )
-      .then(turnoService.getAll().then((data) => setAppointments(data)));
+      .then(appointmentService.getAll().then((data) => setAppointments(data)));
     toast.current.show({
       severity: "info",
       summary: "Atención!",
@@ -178,7 +185,7 @@ const Appointments = () => {
 
   function eliminar() {
     if (window.confirm("Realmente desea eliminar el registro?")) {
-      turnoService
+      appointmentService
         .delete(selectedAppointment.id)
         .then(
           toast.current.show({
@@ -187,7 +194,7 @@ const Appointments = () => {
             detail: "Se eliminó el registro correctamente."
           })
         )
-        .then(turnoService.getAll().then((data) => setAppointments(data)));
+        .then(appointmentService.getAll().then((data) => setAppointments(data)));
     }
   }
 
@@ -196,7 +203,7 @@ const Appointments = () => {
       id: selectedAppointment.id,
       date: selectedAppointment.date,
       patient: selectedAppointment.patientId,
-      odontologo: selectedAppointment.odontologoId
+      dentist: selectedAppointment.dentistId
     });
     setVisible(true);
   }
@@ -216,14 +223,14 @@ const Appointments = () => {
     <>
       <div style={{ width: "80%", marginTop: "20px", margin: "0 auto" }}>
         <Dialog
-          header="Actualizar turno"
+          header="Actualizar appointment"
           visible={visible}
           style={{ width: "400px" }}
           footer={footer}
           modal={true}
           onHide={() => setVisible(false)}
         >
-          <form id="turno-form">
+          <form id="appointment-form">
             <div className="p-field">
               <span className="p-float-label">
                 <Calendar
@@ -250,16 +257,16 @@ const Appointments = () => {
               <span className="p-float-label">
                 <Dropdown
                   id="dropdown1"
-                  value={odontologo}
+                  value={dentist}
                   onChange={(e) => {
                     setSelectedAppointment((prevState) => {
-                      return { ...prevState, odontologoId: e.value };
+                      return { ...prevState, dentistId: e.value };
                     });
                     setDentist(e.value);
                   }}
-                  options={odontologos}
+                  options={dentists}
                 />
-                <label htmlFor="odontologo">Dentists</label>
+                <label htmlFor="dentist">Dentists</label>
               </span>
             </div>
             <div className="p-field">
@@ -284,7 +291,7 @@ const Appointments = () => {
       <div className="p-d-flex p-jc-center">
         <div className="card">
           <fieldset>
-            <legend className="p-text-center">Registrar turno</legend>
+            <legend className="p-text-center">Registrar appointment</legend>
             <form className="p-fluid" onSubmit={handleSubmit}>
               <div className="p-field">
                 <span className="p-float-label">
@@ -311,16 +318,16 @@ const Appointments = () => {
               <div className="p-field">
                 <span className="p-float-label">
                   <Dropdown
-                    value={odontologo}
+                    value={dentist}
                     onChange={(e) => {
                       setAppointment((prevState) => {
-                        return { ...prevState, odontologoId: e.value };
+                        return { ...prevState, dentistId: e.value };
                       });
                       setDentist(e.value);
                     }}
-                    options={odontologos}
+                    options={dentists}
                   />
-                  <label htmlFor="odontologo">Dentists</label>
+                  <label htmlFor="dentist">Dentists</label>
                 </span>
               </div>
               <div className="p-field">
@@ -358,9 +365,9 @@ const Appointments = () => {
             onSelectionChange={(e) => setSelectedAppointment(e.value)}
           >
             <Column field="id" header="ID" sortable></Column>
-            <Column field="date" header="Fecha" sortable></Column>
+            <Column field="date" header="Date" sortable></Column>
             <Column field="patientId" header="Patient"></Column>
-            <Column field="odontologoId" header="Dentist"></Column>
+            <Column field="dentistId" header="Dentist"></Column>
           </DataTable>
         </Panel>
       </div>

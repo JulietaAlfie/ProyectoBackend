@@ -18,7 +18,7 @@ export class PatientService {
   }
   update(patient) {
     return axios
-      .put(this.baseUrl, patient, this.config)
+      .put(this.baseUrl + "/" + patient.id, patient, this.config)
       .then((res) => res.data);
   }
 
